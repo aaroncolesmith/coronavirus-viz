@@ -20,6 +20,8 @@ _max_width_()
 
 st.title("Coronavirus Viz")
 st.markdown("Feel free to explore the data. Click on an item in the legend to filter it out -- double-click an item to filter down to just that item.")
+st.write("If you have any feedback or questions, feel free to get at me on the [Twitter] (https://www.twitter.com/aaroncolesmith) machine")
+
 
 df=pd.read_csv('./covid_19_data.csv')
 
@@ -32,3 +34,6 @@ st.plotly_chart(a)
 
 b = px.bar(df.groupby(['observationdate','country_region']).agg({'deaths':sum}).reset_index(drop=False).sort_values(['deaths'],ascending=False), x='observationdate',y='deaths',color='country_region', title='Deaths Over Time',width=1400, height=600)
 st.plotly_chart(b)
+
+c = px.scatter(df.groupby(['country_region']).agg({'confirmed':max, 'deaths':max}).reset_index(),x='confirmed',y='deaths',color='country_region', title='Confirmed Cases vs. Deaths by Country')
+st.plotly_chart(c)
