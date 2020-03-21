@@ -43,3 +43,26 @@ c.update_traces(marker=dict(size=12,
 
 
 st.plotly_chart(c)
+
+
+dfg=df.groupby(['observationdate','country_region']).agg({'confirmed':sum}).reset_index(drop=False)
+g=pd.concat([dfg.loc[dfg.country_region == 'Mainland China'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'US'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'South Korea'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'Japan'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'Italy'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'Iran'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'Singapore'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'France'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'Japan'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'Germany'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'Spain'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'Hong Kong'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
+         dfg.loc[dfg.country_region == 'UK'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index()
+           .reset_index()], sort=False)
+
+t=px.line(g.loc[g.over_100 > 0],x='over_100',y='confirmed',color='country_region', title='Confirmed Cases Since the 100th Observation')
+t.update_xaxes(title='Days Since 100th Observation')
+t.update_yaxes(title='Confirmed Cases')
+t.update_traces(mode='lines+markers')
+st.plotly_chart(t)
