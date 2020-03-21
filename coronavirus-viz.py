@@ -67,7 +67,7 @@ g=pd.concat([dfg.loc[dfg.country_region == 'Mainland China'].groupby(['observati
 
 
 
-t=px.line(g.loc[g.over_100 > 0],x='over_100',y='confirmed',color='country_region', title='Confirmed Cases Since the 100th Observation',width=1400, height=600)
+t=px.line(g.loc[g.over_100 > 0],x='over_100',y='confirmed',color='country_region', title='Confirmed Cases Since the 100th Observation',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
 t.update_xaxes(title='Days Since 100th Observation')
 t.update_yaxes(title='Confirmed Cases')
 t.update_traces(mode='lines+markers')
