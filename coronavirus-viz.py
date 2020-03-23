@@ -28,6 +28,8 @@ df=pd.read_csv('./covid_19_data.csv')
 df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('.', '_').str.replace(')', '').str.replace('/','_')
 
 df['observationdate'] = pd.to_datetime(df['observationdate'])
+df['viz_date']=df['observationdate']
+df['viz_date']=df.viz_date.apply(lambda x: x.strftime('%Y-%m-%d'))
 
 a = px.bar(df.groupby(['observationdate','country_region']).agg({'confirmed':sum}).reset_index(drop=False).sort_values(['confirmed'],ascending=False), x='observationdate',y='confirmed',color='country_region', title='Observations Over Time',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
 st.plotly_chart(a)
@@ -35,12 +37,27 @@ st.plotly_chart(a)
 b = px.bar(df.groupby(['observationdate','country_region']).agg({'deaths':sum}).reset_index(drop=False).sort_values(['deaths'],ascending=False), x='observationdate',y='deaths',color='country_region', title='Deaths Over Time',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
 st.plotly_chart(b)
 
-c = px.scatter(df.groupby(['country_region']).agg({'confirmed':max, 'deaths':max}).reset_index(),x='confirmed',y='deaths',color='country_region', title='Confirmed Cases vs. Deaths by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
+# c = px.scatter(df.groupby(['country_region']).agg({'confirmed':max, 'deaths':max}).reset_index(),x='confirmed',y='deaths',color='country_region', title='Confirmed Cases vs. Deaths by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
+# c.update_traces(marker=dict(size=12,
+#                               line=dict(width=2,
+#                                         color='DarkSlateGrey')),
+#                   selector=dict(mode='markers'))
+
+
+c = px.scatter(df.groupby(['observationdate','viz_date','country_region'])
+               .agg({'confirmed':max, 'deaths':max})
+               .reset_index(),
+               x='confirmed',
+               y='deaths',
+               color='country_region',
+               animation_frame='viz_date',
+               animation_group='country_region',
+               title='Confirmed Cases vs. Deaths by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
+
 c.update_traces(marker=dict(size=12,
                               line=dict(width=2,
                                         color='DarkSlateGrey')),
                   selector=dict(mode='markers'))
-
 
 st.plotly_chart(c)
 
