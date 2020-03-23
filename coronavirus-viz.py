@@ -77,19 +77,19 @@ t.update_traces(mode='lines+markers')
 st.plotly_chart(t)
 
 
-c = px.scatter(df.groupby(['observationdate','viz_date','country_region'])
-               .agg({'confirmed':max, 'deaths':max})
-               .reset_index(),
-               x='confirmed',
-               y='deaths',
-               color='country_region',
-               animation_frame='viz_date',
-               animation_group='country_region',
-               title='Confirmed Cases vs. Deaths by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
-
-c.update_traces(marker=dict(size=12,
-                              line=dict(width=2,
-                                        color='DarkSlateGrey')),
-                  selector=dict(mode='markers'))
-
-st.plotly_chart(c)
+# c = px.scatter(df.groupby(['observationdate','viz_date','country_region'])
+#                .agg({'confirmed':max, 'deaths':max})
+#                .reset_index(),
+#                x='confirmed',
+#                y='deaths',
+#                color='country_region',
+#                animation_frame='viz_date',
+#                animation_group='country_region',
+#                title='Confirmed Cases vs. Deaths by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
+#
+# c.update_traces(marker=dict(size=12,
+#                               line=dict(width=2,
+#                                         color='DarkSlateGrey')),
+#                   selector=dict(mode='markers'))
+#
+# st.plotly_chart(c)
