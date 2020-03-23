@@ -16,20 +16,25 @@ def _max_width_():
         unsafe_allow_html=True,
     )
 
+@st.cache
+def load_data():
+    df=pd.read_csv('./covid_19_data.csv')
+
+    df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('.', '_').str.replace(')', '').str.replace('/','_')
+
+    df['observationdate'] = pd.to_datetime(df['observationdate'])
+    df['viz_date']=df['observationdate']
+    df['viz_date']=df.viz_date.apply(lambda x: x.strftime('%Y-%m-%d'))
+    return df
+
+
 _max_width_()
 
 st.title("Coronavirus-Viz")
 st.markdown("Feel free to explore the data. Click on an item in the legend to filter it out -- double-click an item to filter down to just that item. Or click and drag to filter the view so that you only see the range you are looking for.")
 st.write("If you have any feedback or questions, feel free to get at me on the [Twitter] (https://www.twitter.com/aaroncolesmith) machine")
 
-
-df=pd.read_csv('./covid_19_data.csv')
-
-df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_').str.replace('.', '_').str.replace(')', '').str.replace('/','_')
-
-df['observationdate'] = pd.to_datetime(df['observationdate'])
-df['viz_date']=df['observationdate']
-df['viz_date']=df.viz_date.apply(lambda x: x.strftime('%Y-%m-%d'))
+df = load_data()
 
 a = px.bar(df.groupby(['observationdate','country_region']).agg({'confirmed':sum}).reset_index(drop=False).sort_values(['confirmed'],ascending=False), x='observationdate',y='confirmed',color='country_region', title='Observations Over Time',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
 st.plotly_chart(a)
@@ -42,25 +47,6 @@ st.plotly_chart(b)
 #                               line=dict(width=2,
 #                                         color='DarkSlateGrey')),
 #                   selector=dict(mode='markers'))
-
-
-c = px.scatter(df.groupby(['observationdate','viz_date','country_region'])
-               .agg({'confirmed':max, 'deaths':max})
-               .reset_index(),
-               x='confirmed',
-               y='deaths',
-               color='country_region',
-               animation_frame='viz_date',
-               animation_group='country_region',
-               title='Confirmed Cases vs. Deaths by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
-
-c.update_traces(marker=dict(size=12,
-                              line=dict(width=2,
-                                        color='DarkSlateGrey')),
-                  selector=dict(mode='markers'))
-
-st.plotly_chart(c)
-
 
 dfg=df.groupby(['observationdate','country_region']).agg({'confirmed':sum}).reset_index(drop=False)
 
@@ -89,3 +75,21 @@ t.update_xaxes(title='Days Since 100th Observation')
 t.update_yaxes(title='Confirmed Cases')
 t.update_traces(mode='lines+markers')
 st.plotly_chart(t)
+
+
+c = px.scatter(df.groupby(['observationdate','viz_date','country_region'])
+               .agg({'confirmed':max, 'deaths':max})
+               .reset_index(),
+               x='confirmed',
+               y='deaths',
+               color='country_region',
+               animation_frame='viz_date',
+               animation_group='country_region',
+               title='Confirmed Cases vs. Deaths by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
+
+c.update_traces(marker=dict(size=12,
+                              line=dict(width=2,
+                                        color='DarkSlateGrey')),
+                  selector=dict(mode='markers'))
+
+st.plotly_chart(c)
