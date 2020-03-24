@@ -47,6 +47,7 @@ c.update_traces(marker=dict(size=12,
                               line=dict(width=2,
                                         color='DarkSlateGrey')),
                   selector=dict(mode='markers'))
+st.plotly_chart(c)
 
 dfg=df.groupby(['observationdate','country_region']).agg({'confirmed':sum}).reset_index(drop=False)
 
