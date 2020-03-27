@@ -42,12 +42,15 @@ st.plotly_chart(a)
 b = px.bar(df.groupby(['observationdate','country_region']).agg({'deaths':sum}).reset_index(drop=False).sort_values(['deaths'],ascending=False), x='observationdate',y='deaths',color='country_region', title='Deaths Over Time',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
 st.plotly_chart(b)
 
-c = px.scatter(df.groupby(['country_region']).agg({'confirmed':max, 'deaths':max}).reset_index(),x='confirmed',y='deaths',color='country_region', title='Confirmed Cases vs. Deaths by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
+c = px.scatter(df.groupby(['observationdate','country_region']).agg({'confirmed':sum,'deaths':sum}).reset_index(drop=False).groupby(['country_region']).agg({'confirmed':'last','deaths':'last'}).reset_index(),x='confirmed',y='deaths',color='country_region', title='Confirmed Cases vs. Deaths by Country').for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
 c.update_traces(marker=dict(size=12,
                               line=dict(width=2,
                                         color='DarkSlateGrey')),
                   selector=dict(mode='markers'))
 st.plotly_chart(c)
+
+d=px.bar(df[(df.country_region == 'US') & (df.observationdate > '2020-02-28')].groupby(['observationdate','province_state']).agg({'confirmed':sum}).reset_index(drop=False).sort_values(['confirmed'],ascending=False), x='observationdate',y='confirmed',color='province_state', title='US Observations by State')
+st.plotly_chart(d)
 
 dfg=df.groupby(['observationdate','country_region']).agg({'confirmed':sum}).reset_index(drop=False)
 
