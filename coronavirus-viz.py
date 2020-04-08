@@ -134,6 +134,15 @@ def bar_graph_confirmed_growth_state(df):
        x='Date',y='Confirmed_Growth',color='Province_State', title = 'Confirmed Growth (Day over Day) by State',width=1400, height=600)
     st.plotly_chart(a)
 
+def scatter_deaths_confirmed(df):
+    p=df_all.groupby(['Date','Country_Region']).agg({'Deaths':'sum','Confirmed':'sum'}).reset_index()
+    a=px.scatter(p.groupby(['Country_Region']).agg({'Deaths':'last','Confirmed':'last'}).reset_index(),x='Confirmed',y='Deaths',color='Country_Region',title='Confirmed Cases vs. Deaths by Country')
+    a.update_traces(marker=dict(size=12,
+                              line=dict(width=2,
+                                        color='DarkSlateGrey')),
+                  selector=dict(mode='markers'))
+    st.plotly_chart(a)
+
 
 
 
@@ -157,6 +166,7 @@ def main():
     bar_graph_deaths_growth(df_all)
     bar_graph_confirmed_state(df_us)
     bar_graph_confirmed_growth_state(df_us)
+    scatter_deaths_confirmed(df_all)
 
 
 if __name__ == "__main__":
