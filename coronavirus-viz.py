@@ -135,7 +135,7 @@ def bar_graph_confirmed_growth_state(df):
     st.plotly_chart(a)
 
 def scatter_deaths_confirmed(df):
-    p=df_all.groupby(['Date','Country_Region']).agg({'Deaths':'sum','Confirmed':'sum'}).reset_index()
+    p=df.groupby(['Date','Country_Region']).agg({'Deaths':'sum','Confirmed':'sum'}).reset_index()
     a=px.scatter(p.groupby(['Country_Region']).agg({'Deaths':'last','Confirmed':'last'}).reset_index(),x='Confirmed',y='Deaths',color='Country_Region',title='Confirmed Cases vs. Deaths by Country')
     a.update_traces(marker=dict(size=12,
                               line=dict(width=2,
