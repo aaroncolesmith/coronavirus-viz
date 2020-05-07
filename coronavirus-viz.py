@@ -107,7 +107,7 @@ def bar_graph_all(df):
     st.plotly_chart(a)
 
 def bar_graph_country(df):
-    a=px.bar(df.groupby(['Date','Country_Region']).agg({'Confirmed':'sum'}).reset_index().sort_values('Confirmed',ascending=False),x='Date',y='Confirmed',color='Country_Region', title = 'Confirmed Cases by Country',width=1400, height=600)
+    a=px.bar(df.groupby(['Date','Country_Region']).agg({'Confirmed':'sum'}).reset_index().sort_values('Confirmed',ascending=False),x='Date',y='Confirmed',color='Country_Region', title = 'Confirmed Cases by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
     st.plotly_chart(a)
 
 def bar_graph_confirmed_growth(df):
