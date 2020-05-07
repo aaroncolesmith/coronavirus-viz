@@ -112,26 +112,26 @@ def bar_graph_country(df):
 
 def bar_graph_confirmed_growth(df):
     a=px.bar(df.groupby(['Date','Country_Region']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),
-       x='Date',y='Confirmed_Growth',color='Country_Region', title = 'Confirmed Growth (Day over Day) by Country',width=1400, height=600)
+       x='Date',y='Confirmed_Growth',color='Country_Region', title = 'Confirmed Growth (Day over Day) by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
     st.plotly_chart(a)
 
 def bar_graph_deaths(df):
-    a=px.bar(df.groupby(['Date']).agg({'Deaths':'sum'}).reset_index(),x='Date',y='Deaths',title='Deaths Over Time',width=1400, height=600)
+    a=px.bar(df.groupby(['Date']).agg({'Deaths':'sum'}).reset_index(),x='Date',y='Deaths',title='Deaths Over Time',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
     st.plotly_chart(a)
 
 def bar_graph_deaths_growth(df):
     a=px.bar(df.groupby(['Date','Country_Region']).agg({'Deaths_Growth':'sum'}).reset_index().sort_values('Deaths_Growth',ascending=False),
-       x='Date',y='Deaths_Growth',color='Country_Region', title = 'Death Growth by Country',width=1400, height=600)
+       x='Date',y='Deaths_Growth',color='Country_Region', title = 'Death Growth by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
     st.plotly_chart(a)
 
 def bar_graph_confirmed_state(df):
     a=px.bar(df.loc[df['Date'] > '2020-03-15'].groupby(['Date','Province_State']).agg({'Confirmed':'sum'}).reset_index().sort_values('Confirmed',ascending=False),
-       x='Date',y='Confirmed',color='Province_State', title = 'Confirmed by US State',width=1400, height=600)
+       x='Date',y='Confirmed',color='Province_State', title = 'Confirmed by US State',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
     st.plotly_chart(a)
 
 def bar_graph_confirmed_growth_state(df):
     a=px.bar(df.loc[df['Date'] > '2020-03-15'].groupby(['Date','Province_State']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),
-       x='Date',y='Confirmed_Growth',color='Province_State', title = 'Confirmed Growth (Day over Day) by State',width=1400, height=600)
+       x='Date',y='Confirmed_Growth',color='Province_State', title = 'Confirmed Growth (Day over Day) by State',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
     st.plotly_chart(a)
 
 def scatter_deaths_confirmed(df):
