@@ -103,7 +103,7 @@ def load_data_global():
     return df_all
 
 def bar_graph_all(df):
-    a=px.bar(df.groupby(['Date']).agg({'Confirmed':'sum'}).reset_index(),x='Date',y='Confirmed',title='Confirmed Cases Over Time', width=1400, height=600)
+    a=px.bar(df.groupby(['Date']).agg({'Confirmed':'sum'}).reset_index(),x='Date',y='Confirmed',title='Confirmed Cases Over Time', width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
     st.plotly_chart(a)
 
 def bar_graph_country(df):
