@@ -112,12 +112,10 @@ def bar_graph_all(df):
 
 def bar_graph_country(df):
     a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date','Country_Region']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),x='Date',y='Confirmed_Growth',color='Country_Region', title = 'Daily Growth in COVID Cases by Country')
-    a.update_layout(showlegend=False,legend={x:1})
+    a.update_layout(showlegend=False,legend=dict(x=1))
     st.plotly_chart(a)
 
-  #     legend: {
-  #   x: 1,
-  # }
+
 
 def bar_graph_confirmed_growth(df):
     a=px.bar(df.groupby(['Date','Country_Region']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),
