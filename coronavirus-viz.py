@@ -102,6 +102,10 @@ def load_data_global():
 
     return df_all
 
+def daily_growth_all(df):
+    a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date']).agg({'Confirmed_Growth':'sum'}).reset_index(),x='Date',y='Confirmed_Growth',title='Daily Growth in COVID Cases',width=1400, height=600)
+    st.plotly_chart(a)
+
 def bar_graph_all(df):
     a=px.bar(df.groupby(['Date']).agg({'Confirmed':'sum'}).reset_index(),x='Date',y='Confirmed',title='Confirmed Cases Over Time', width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
     st.plotly_chart(a)
@@ -158,15 +162,20 @@ def main():
 
     df_us = load_data_us()
     df_all = load_data_global()
-
-    bar_graph_all(df_all)
+    #Daily Growth in COVID Cases
+    daily_growth_all(df_all)
+    #Daily Growth in COVID Cases by Country
     bar_graph_country(df_all)
-    bar_graph_confirmed_growth(df_all)
-    bar_graph_deaths(df_all)
-    bar_graph_deaths_growth(df_all)
-    bar_graph_confirmed_state(df_us)
-    bar_graph_confirmed_growth_state(df_us)
-    scatter_deaths_confirmed(df_all)
+    #Yesterday's Top Growth Factor by Country
+
+
+    # bar_graph_all(df_all)
+    # bar_graph_confirmed_growth(df_all)
+    # bar_graph_deaths(df_all)
+    # bar_graph_deaths_growth(df_all)
+    # bar_graph_confirmed_state(df_us)
+    # bar_graph_confirmed_growth_state(df_us)
+    # scatter_deaths_confirmed(df_all)
 
 
 if __name__ == "__main__":
