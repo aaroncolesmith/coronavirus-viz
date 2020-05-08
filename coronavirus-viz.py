@@ -116,7 +116,7 @@ def bar_graph_country(df):
 
 def bar_graph_confirmed_growth(df):
     a=px.bar(df.groupby(['Date','Country_Region']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),
-       x='Date',y='Confirmed_Growth',color='Country_Region', title = 'Confirmed Growth (Day over Day) by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
+       x='Date',y='Confirmed_Growth',color='Country_Region', title = 'Confirmed Growth (Day over Day) by Country',width=1200, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
     st.plotly_chart(a)
 
 def bar_graph_deaths(df):
@@ -146,12 +146,6 @@ def scatter_deaths_confirmed(df):
                                         color='DarkSlateGrey')),
                   selector=dict(mode='markers'))
     st.plotly_chart(a)
-
-
-
-
-
-
 
 
 def main():
