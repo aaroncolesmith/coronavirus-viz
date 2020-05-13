@@ -103,7 +103,8 @@ def load_data_global():
     return df_all
 
 def daily_growth_all(df):
-    a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date']).agg({'Confirmed_Growth':'sum'}).reset_index(),x='Date',y='Confirmed_Growth',title='Daily Growth in COVID Cases',width=1400, height=600)
+    a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date']).agg({'Confirmed_Growth':'sum'}).reset_index(),x='Date',y='Confirmed_Growth',title='Daily Growth in COVID Cases')
+    a.update_layout(showlegend=True)
     st.plotly_chart(a)
 
 def bar_graph_all(df):
@@ -112,10 +113,17 @@ def bar_graph_all(df):
 
 def bar_graph_country(df):
     a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date','Country_Region']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),x='Date',y='Confirmed_Growth',color='Country_Region', title = 'Daily Growth in COVID Cases by Country')
-    a.update_layout(showlegend=False,legend=dict(x=1))
+    a.update_layout(showlegend=True)
+    #a.update_layout(width=800,paper_bgcolor="LightSteelBlue",autosize=False)
+    #legend=dict(x=2.2, y=1.0))
+    #legend=dict(xanchor='center',yanchor='top',x=0.5,y=-1.3)
     st.plotly_chart(a)
 
-
+ # xanchor:"center",
+ #    yanchor:"top",
+ #    y:-0.3, // play with it
+ #    x:0.5   // play with it
+ #  }
 
 def bar_graph_confirmed_growth(df):
     a=px.bar(df.groupby(['Date','Country_Region']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),
