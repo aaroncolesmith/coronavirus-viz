@@ -112,6 +112,7 @@ def bar_graph_all(df):
     st.plotly_chart(a)
 
 def bar_graph_country(df):
+    df['Country_Region'] = df.Country_Region.str[:15]
     a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date','Country_Region']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),x='Date',y='Confirmed_Growth',color='Country_Region', title = 'Daily Growth in COVID Cases by Country')
     a.update_layout(showlegend=True)
     #a.update_layout(width=800,paper_bgcolor="LightSteelBlue",autosize=False)
@@ -230,7 +231,7 @@ def main():
         state=option
         state_rolling_avg(df_us, state)
         state_deaths_rolling_avg(df_us, state)
-        
+
 if __name__ == "__main__":
     #execute
     main()
