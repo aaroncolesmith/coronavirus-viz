@@ -120,12 +120,6 @@ def bar_graph_country(df):
     #legend=dict(xanchor='center',yanchor='top',x=0.5,y=-1.3)
     st.plotly_chart(a)
 
- # xanchor:"center",
- #    yanchor:"top",
- #    y:-0.3, // play with it
- #    x:0.5   // play with it
- #  }
-
 def bar_graph_confirmed_growth(df):
     a=px.bar(df.groupby(['Date','Country_Region']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),
        x='Date',y='Confirmed_Growth',color='Country_Region', title = 'Confirmed Growth (Day over Day) by Country',width=1200, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
@@ -195,6 +189,20 @@ def state_rolling_avg(df, state):
                                             color='DarkSlateGrey')))
     st.plotly_chart(fig)
 
+def mortality_rate(df):
+    d=df.groupby(['Date']).agg({'Deaths':'sum','Confirmed':'sum'}).reset_index()
+    d['Mortality_Rate'] = (d.Deaths / d.Confirmed)*100
+
+    fig=px.scatter(d.tail(30),x='Date',y='Mortality_Rate',width=800,title='Mortality Rate Over Time (Last 30 Days)',text='Mortality_Rate')
+    fig.update_traces(textposition='bottom center',
+                      texttemplate = '%{text:.2f}',
+                      textfont_size=10,
+                      marker=dict(size=6,
+                                  line=dict(width=1,
+                                            color='DarkSlateGrey')))
+    st.plotly_chart(fig)
+
+
 def state_deaths_rolling_avg(df, state):
 
     d=df.loc[(df.Date > df.Date.max() - pd.to_timedelta(60, unit='d')) & (df.Province_State == state)].groupby(['Date']).agg({'Deaths_Growth':'sum'}).reset_index()
@@ -223,6 +231,7 @@ def main():
     #Yesterday's Top Growth Factor by Country
     rolling_avg(df_all)
     rolling_avg_deaths(df_all)
+    mortality_rate(df_all)
 
     a=df_us['Province_State'].unique()
     a=np.insert(a,0,'')
