@@ -102,7 +102,10 @@ def load_data_global():
     return df_all
 
 def daily_growth_all(df):
-    a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date']).agg({'Confirmed_Growth':'sum'}).reset_index(),x='Date',y='Confirmed_Growth',title='Daily Growth in COVID Cases')
+    a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date']).agg({'Confirmed_Growth':'sum'}).reset_index(),
+    x='Date',
+    y='Confirmed_Growth',
+    title='Daily Growth in COVID Cases')
     a.update_layout(showlegend=True)
     st.plotly_chart(a)
 
