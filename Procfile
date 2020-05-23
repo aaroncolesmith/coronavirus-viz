@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run coronavirus-viz.py
+web: sh setup.sh && streamlit run coronavirus_viz.py
