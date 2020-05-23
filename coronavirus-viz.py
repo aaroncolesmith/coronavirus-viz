@@ -18,7 +18,10 @@ def _max_width_():
 
 @st.cache
 def load_data_us():
-    df = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv')
+    try:
+        df = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv')
+    except:
+        df = pd.read_csv('./coronavirus_viz/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv')
     df = df.drop(df.columns[0:5], axis=1)
     df=df.set_index(['Admin2','Province_State','Country_Region','Combined_Key','Lat','Long_']).stack().reset_index()
     df.columns=['Admin2','Province_State','Country_Region','Combined_Key','Lat','Long_','Date','Confirmed']
@@ -34,7 +37,10 @@ def load_data_us():
     df.loc[df.Combined_Key != df.Combined_Key.shift(1),'Confirmed_Growth_Pct'] = 0
     df['Confirmed_Growth_Pct'] = df.Confirmed_Growth_Pct.fillna(0)
 
-    deaths_us = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv')
+    try:
+        deaths_us = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv')
+    except:
+        deaths_us = pd.read_csv('./coronavirus_viz/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv')
     deaths_us = deaths_us.drop(deaths_us.columns[0:5], axis=1)
     deaths_us=deaths_us.set_index(['Admin2','Province_State','Country_Region','Combined_Key','Lat','Long_']).stack().reset_index()
     deaths_us.columns=['Admin2','Province_State','Country_Region','Combined_Key','Lat','Long_','Date','Deaths']
@@ -59,7 +65,10 @@ def load_data_us():
     return df_us
 
 def load_data_global():
-    confirmed_all = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
+    try:
+        confirmed_all = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
+    except:
+        confirmed_all = pd.read_csv('./coronavirus_viz/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
     confirmed_all=confirmed_all.set_index(['Province/State','Country/Region','Lat','Long']).stack().reset_index()
     confirmed_all['Combined_Key'] = confirmed_all['Province/State'].fillna('None') + ', ' + confirmed_all['Country/Region']
     confirmed_all.columns=['Province/State','Country/Region','Lat','Long','Date','Confirmed','Combined_Key']
@@ -78,7 +87,10 @@ def load_data_global():
     confirmed_all.loc[confirmed_all.Combined_Key != confirmed_all.Combined_Key.shift(1),'Confirmed_Growth_Pct'] = 0
     confirmed_all['Confirmed_Growth_Pct']=confirmed_all['Confirmed_Growth_Pct'].fillna(0)
 
-    deaths_all = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
+    try:
+        deaths_all = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
+    except:
+        deaths_all = pd.read_csv('./coronavirus_viz/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
     deaths_all=deaths_all.set_index(['Province/State','Country/Region','Lat','Long']).stack().reset_index()
     deaths_all['Combined_Key'] = deaths_all['Province/State'].fillna('None') + ', ' + deaths_all['Country/Region']
     deaths_all.columns=['Province/State','Country/Region','Lat','Long','Date','Deaths','Combined_Key']
@@ -218,6 +230,9 @@ def state_deaths_rolling_avg(df, state):
                                   line=dict(width=1,
                                             color='DarkSlateGrey')))
     st.plotly_chart(fig)
+
+def coronavirus_viz():
+    main()
 
 def main():
     #_max_width_()
