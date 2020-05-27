@@ -253,6 +253,9 @@ def main():
     st.markdown("Feel free to explore the data. Click on an item in the legend to filter it out -- double-click an item to filter down to just that item. Or click and drag to filter the view so that you only see the range you are looking for.")
     st.write("If you have any feedback or questions, feel free to get at me on the [Twitter] (https://www.twitter.com/aaroncolesmith) machine")
 
+    st.write('<img src="https://www.google-analytics.com/collect?v=1&tid=UA-18433914-1&cid=555&aip=1&t=event&ec=coronavirus_viz&ea=coronavirus_viz">',unsafe_allow_html=True)
+
+
     df_us = load_data_us()
     df_all = load_data_global()
     #Daily Growth in COVID Cases
@@ -268,6 +271,7 @@ def main():
     a=np.insert(a,0,'')
     option=st.selectbox('Select a State to view data', a)
     if len(option) > 0:
+        st.write('<img src="https://www.google-analytics.com/collect?v=1&tid=UA-18433914-1&cid=555&aip=1&t=event&ec=coronavirus_viz&ea='+option+'">',unsafe_allow_html=True)
         state=option
         state_rolling_avg(df_us, state)
         state_deaths_rolling_avg(df_us, state)
