@@ -19,7 +19,7 @@ def _max_width_():
 @st.cache
 def load_data_us():
     try:
-        df = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv')
+        df = pd.read_csv('./data/time_series_covid19_confirmed_US.csv')
     except:
         try:
             df = pd.read_csv('./coronavirus_viz/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv')
@@ -41,7 +41,7 @@ def load_data_us():
     df['Confirmed_Growth_Pct'] = df.Confirmed_Growth_Pct.fillna(0)
 
     try:
-        deaths_us = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv')
+        deaths_us = pd.read_csv('./data/time_series_covid19_deaths_US.csv')
     except:
         try:
             deaths_us = pd.read_csv('./coronavirus_viz/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv')
@@ -73,7 +73,7 @@ def load_data_us():
 
 def load_data_global():
     try:
-        confirmed_all = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
+        confirmed_all = pd.read_csv('./data/time_series_covid19_confirmed_global.csv')
     except:
         try:
             confirmed_all = pd.read_csv('./coronavirus_viz/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
@@ -98,7 +98,7 @@ def load_data_global():
     confirmed_all['Confirmed_Growth_Pct']=confirmed_all['Confirmed_Growth_Pct'].fillna(0)
 
     try:
-        deaths_all = pd.read_csv('./csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
+        deaths_all = pd.read_csv('./data/time_series_covid19_deaths_global.csv')
     except:
         try:
             deaths_all = pd.read_csv('./coronavirus_viz/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
