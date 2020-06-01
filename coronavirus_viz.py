@@ -143,9 +143,6 @@ def bar_graph_country(df):
     df['Country'] = df.Country_Region.str[:15]
     a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date','Country']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),x='Date',y='Confirmed_Growth',color='Country', title = 'Daily Growth in COVID Cases by Country')
     a.update_layout(showlegend=True)
-    #a.update_layout(width=800,paper_bgcolor="LightSteelBlue",autosize=False)
-    #legend=dict(x=2.2, y=1.0))
-    #legend=dict(xanchor='center',yanchor='top',x=0.5,y=-1.3)
     st.plotly_chart(a)
 
 def bar_graph_confirmed_growth(df):
@@ -186,7 +183,6 @@ def rolling_avg(df):
     d['Rolling_Avg'] = d['Confirmed_Growth'].rolling(window=7).mean()
     d1 = d.melt(id_vars=['Date']+list(d.keys()[5:]), var_name='val')
     fig=px.line(d1, x='Date', y='value', color='val',title='Daily COVID Cases vs. 7 Day Rolling Average', width=800)
-    #fig.update_traces(mode='lines')
     fig.update_traces(mode='lines+markers',
                       marker=dict(size=6,
                                   line=dict(width=1,
@@ -198,7 +194,6 @@ def rolling_avg_deaths(df):
     d['Rolling_Avg'] = d['Deaths_Growth'].rolling(window=7).mean()
     d1 = d.melt(id_vars=['Date']+list(d.keys()[5:]), var_name='val')
     fig=px.line(d1, x='Date', y='value', color='val',title='Daily COVID Deaths vs. 7 Day Rolling Average')
-    #fig.update_traces(mode='lines')
     fig.update_traces(mode='lines+markers',
                       marker=dict(size=6,
                                   line=dict(width=1,
@@ -210,7 +205,6 @@ def state_rolling_avg(df, state):
     d['Rolling_Avg'] = d['Confirmed_Growth'].rolling(window=7).mean()
     d1 = d.melt(id_vars=['Date']+list(d.keys()[5:]), var_name='val')
     fig=px.line(d1, x='Date', y='value', color='val',title='Daily COVID Cases vs. 7 Day Rolling Average for '+state)
-    #fig.update_traces(mode='lines')
     fig.update_traces(mode='lines+markers',
                       marker=dict(size=6,
                                   line=dict(width=1,
@@ -279,55 +273,3 @@ def main():
 if __name__ == "__main__":
     #execute
     main()
-
-
-
-
-
-
-# a = px.bar(df.groupby(['observationdate','country_region']).agg({'confirmed':sum}).reset_index(drop=False).sort_values(['confirmed'],ascending=False), x='observationdate',y='confirmed',color='country_region', title='Observations Over Time',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
-# st.plotly_chart(a)
-#
-# b = px.bar(df.groupby(['observationdate','country_region']).agg({'deaths':sum}).reset_index(drop=False).sort_values(['deaths'],ascending=False), x='observationdate',y='deaths',color='country_region', title='Deaths Over Time',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
-# st.plotly_chart(b)
-#
-# c = px.scatter(df.groupby(['observationdate','country_region']).agg({'confirmed':sum,'deaths':sum}).reset_index(drop=False).groupby(['country_region']).agg({'confirmed':'last','deaths':'last'}).reset_index(),x='confirmed',y='deaths',color='country_region', title='Confirmed Cases vs. Deaths by Country').for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
-# c.update_traces(marker=dict(size=12,
-#                               line=dict(width=2,
-#                                         color='DarkSlateGrey')),
-#                   selector=dict(mode='markers'))
-# st.plotly_chart(c)
-#
-# d=px.bar(df[(df.country_region == 'US') & (df.observationdate > '2020-02-28')].groupby(['observationdate','province_state']).agg({'confirmed':sum}).reset_index(drop=False).sort_values(['confirmed'],ascending=False), x='observationdate',y='confirmed',color='province_state', title='US Observations by State')
-# st.plotly_chart(d)
-#
-# dfg=df.groupby(['observationdate','country_region']).agg({'confirmed':sum}).reset_index(drop=False)
-#
-# dfg.loc[dfg.confirmed >= 100, 'over_100'] = 1
-# dfg.loc[dfg.confirmed < 100, 'over_100'] = 0
-#
-# g=pd.concat([dfg.loc[dfg.country_region == 'Mainland China'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'US'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'South Korea'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'Japan'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'Italy'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'Iran'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'Singapore'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'France'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'Japan'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'Germany'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'Spain'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'Hong Kong'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index(),
-#          dfg.loc[dfg.country_region == 'UK'].groupby(['observationdate','country_region','confirmed']).sum().cumsum().reset_index()
-#            .reset_index()], sort=False)
-#
-#
-#
-# t=px.line(g.loc[g.over_100 > 0],x='over_100',y='confirmed',color='country_region', title='Confirmed Cases Since the 100th Observation',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("country_region=","")))
-# t.update_xaxes(title='Days Since 100th Observation')
-# t.update_yaxes(title='Confirmed Cases')
-# t.update_traces(mode='lines+markers')
-# st.plotly_chart(t)
-#
-#
-#
