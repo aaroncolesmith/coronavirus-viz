@@ -254,7 +254,7 @@ def main():
     rolling_avg(df_all)
     rolling_avg_deaths(df_all)
     mortality_rate(df_all)
-    growth_vs_death(df_all,'Country_Region','Global COVID Case Growth vs. COVID Deaths by Country')
+    growth_vs_death(df_all,'Country','Global COVID Case Growth vs. COVID Deaths by Country')
     growth_vs_death(df_us,'Province_State','COVID Case Growth vs. COVID Deaths by State')
 
 
