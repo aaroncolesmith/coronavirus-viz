@@ -132,57 +132,28 @@ def daily_growth_all(df):
     y='Confirmed_Growth',
     title='Daily Growth in COVID Cases')
     a.update_layout(showlegend=True)
+    a.update_xaxes(title_text='Date')
+    a.update_yaxes(title_text='# of COVID Cases')
     st.plotly_chart(a)
 
-# def bar_graph_all(df):
-#     a=px.bar(df.groupby(['Date']).agg({'Confirmed':'sum'}).reset_index(),x='Date',y='Confirmed',title='Confirmed Cases Over Time', width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
-#     st.plotly_chart(a)
 
 def bar_graph_country(df):
     #df['Country_Region'] = df.Country_Region.str[:15]
     df['Country'] = df.Country_Region.str[:15]
     a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date','Country']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),x='Date',y='Confirmed_Growth',color='Country', title = 'Daily Growth in COVID Cases by Country')
     a.update_layout(showlegend=True)
+    a.update_xaxes(title_text='Date')
+    a.update_yaxes(title_text='# of COVID Cases')
     st.plotly_chart(a)
 
-# def bar_graph_confirmed_growth(df):
-#     a=px.bar(df.groupby(['Date','Country_Region']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),
-#        x='Date',y='Confirmed_Growth',color='Country_Region', title = 'Confirmed Growth (Day over Day) by Country',width=1200, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
-#     st.plotly_chart(a)
-
-# def bar_graph_deaths(df):
-#     a=px.bar(df.groupby(['Date']).agg({'Deaths':'sum'}).reset_index(),x='Date',y='Deaths',title='Deaths Over Time',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
-#     st.plotly_chart(a)
-
-# def bar_graph_deaths_growth(df):
-#     a=px.bar(df.groupby(['Date','Country_Region']).agg({'Deaths_Growth':'sum'}).reset_index().sort_values('Deaths_Growth',ascending=False),
-#        x='Date',y='Deaths_Growth',color='Country_Region', title = 'Death Growth by Country',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
-#     st.plotly_chart(a)
-
-# def bar_graph_confirmed_state(df):
-#     a=px.bar(df.loc[df['Date'] > '2020-03-15'].groupby(['Date','Province_State']).agg({'Confirmed':'sum'}).reset_index().sort_values('Confirmed',ascending=False),
-#        x='Date',y='Confirmed',color='Province_State', title = 'Confirmed by US State',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
-#     st.plotly_chart(a)
-
-# def bar_graph_confirmed_growth_state(df):
-#     a=px.bar(df.loc[df['Date'] > '2020-03-15'].groupby(['Date','Province_State']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),
-#        x='Date',y='Confirmed_Growth',color='Province_State', title = 'Confirmed Growth (Day over Day) by State',width=1400, height=600).for_each_trace(lambda t: t.update(name=t.name.replace("=",": ")))
-#     st.plotly_chart(a)
-
-# def scatter_deaths_confirmed(df):
-#     p=df.groupby(['Date','Country_Region']).agg({'Deaths':'sum','Confirmed':'sum'}).reset_index()
-#     a=px.scatter(p.groupby(['Country_Region']).agg({'Deaths':'last','Confirmed':'last'}).reset_index(),x='Confirmed',y='Deaths',color='Country_Region',title='Confirmed Cases vs. Deaths by Country')
-#     a.update_traces(marker=dict(size=12,
-#                               line=dict(width=2,
-#                                         color='DarkSlateGrey')),
-#                   selector=dict(mode='markers'))
-#     st.plotly_chart(a)
 
 def rolling_avg(df):
     d=df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date']).agg({'Confirmed_Growth':'sum'}).reset_index()
     d['Rolling_Avg'] = d['Confirmed_Growth'].rolling(window=7).mean()
     d1 = d.melt(id_vars=['Date']+list(d.keys()[5:]), var_name='val')
     fig=px.line(d1, x='Date', y='value', color='val',title='Daily COVID Cases vs. 7 Day Rolling Average', width=800)
+    fig.update_xaxes(title_text='Date')
+    fig.update_yaxes(title_text='# of COVID Cases')
     fig.update_traces(mode='lines+markers',
                       marker=dict(size=6,
                                   line=dict(width=1,
@@ -194,6 +165,8 @@ def rolling_avg_deaths(df):
     d['Rolling_Avg'] = d['Deaths_Growth'].rolling(window=7).mean()
     d1 = d.melt(id_vars=['Date']+list(d.keys()[5:]), var_name='val')
     fig=px.line(d1, x='Date', y='value', color='val',title='Daily COVID Deaths vs. 7 Day Rolling Average')
+    fig.update_xaxes(title_text='Date')
+    fig.update_yaxes(title_text='# of COVID Deaths')
     fig.update_traces(mode='lines+markers',
                       marker=dict(size=6,
                                   line=dict(width=1,
@@ -205,6 +178,8 @@ def state_rolling_avg(df, state):
     d['Rolling_Avg'] = d['Confirmed_Growth'].rolling(window=7).mean()
     d1 = d.melt(id_vars=['Date']+list(d.keys()[5:]), var_name='val')
     fig=px.line(d1, x='Date', y='value', color='val',title='Daily COVID Cases vs. 7 Day Rolling Average for '+state)
+    fig.update_xaxes(title_text='Date')
+    fig.update_yaxes(title_text='# of COVID Cases')
     fig.update_traces(mode='lines+markers',
                       marker=dict(size=6,
                                   line=dict(width=1,
@@ -238,11 +213,30 @@ def state_deaths_rolling_avg(df, state):
                                             color='DarkSlateGrey')))
     st.plotly_chart(fig)
 
+def growth_vs_death(df, dimension,title):
+    g=df.groupby([dimension,'Date']).agg({'Confirmed_Growth':'sum','Deaths_Growth':'sum'}).reset_index()
+    g[str(dimension)+'_viz'] = ''
+    g.loc[g.Confirmed_Growth > g.Confirmed_Growth.mean()*2, str(dimension)+'_viz'] = g[dimension]
+    g.loc[g.Deaths_Growth > g.Deaths_Growth.mean()*2, str(dimension)+'_viz'] = g[dimension]
+    fig=px.scatter(g.loc[g.Date == g.Date.max()],
+           x='Confirmed_Growth',
+           y='Deaths_Growth',
+           width=800,
+            text=str(dimension)+'_viz',
+            color=dimension,
+           title=title)
+    fig.update_traces(mode='markers+text',
+                                     textposition="top center",
+                      marker=dict(size=8,
+                                  line=dict(width=1,
+                                            color='DarkSlateGrey')))
+    #fig.show()
+    st.plotly_chart(fig)
+
 def coronavirus_viz():
     main()
 
 def main():
-    #_max_width_()
     st.title("Coronavirus-Viz")
     st.markdown("Feel free to explore the data. Click on an item in the legend to filter it out -- double-click an item to filter down to just that item. Or click and drag to filter the view so that you only see the range you are looking for.")
     st.write("If you have any feedback or questions, feel free to get at me on the [Twitter] (https://www.twitter.com/aaroncolesmith) machine")
@@ -252,17 +246,18 @@ def main():
 
     df_us = load_data_us()
     df_all = load_data_global()
-    #Daily Growth in COVID Cases
+    a=df_us['Province_State'].unique()
+    a=np.insert(a,0,'')
+
     daily_growth_all(df_all)
-    #Daily Growth in COVID Cases by Country
     bar_graph_country(df_all)
-    #Yesterday's Top Growth Factor by Country
     rolling_avg(df_all)
     rolling_avg_deaths(df_all)
     mortality_rate(df_all)
+    growth_vs_death(df_all,'Country_Region','Global COVID Case Growth vs. COVID Deaths by Country')
+    growth_vs_death(df_us,'Province_State','COVID Case Growth vs. COVID Deaths by State')
 
-    a=df_us['Province_State'].unique()
-    a=np.insert(a,0,'')
+
     option=st.selectbox('Select a State to view data', a)
     if len(option) > 0:
         st.write('<img src="https://www.google-analytics.com/collect?v=1&tid=UA-18433914-1&cid=555&aip=1&t=event&ec=coronavirus_viz&ea='+option+'">',unsafe_allow_html=True)
