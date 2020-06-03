@@ -130,7 +130,7 @@ def daily_growth_all(df):
     a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date']).agg({'Confirmed_Growth':'sum'}).reset_index(),
     x='Date',
     y='Confirmed_Growth',
-    title='Daily Growth in COVID Cases')
+    title='Daily Growth in COVID Cases for '+str(df.Date.dt.date.max()))
     a.update_layout(showlegend=True)
     a.update_xaxes(title_text='Date')
     a.update_yaxes(title_text='# of COVID Cases')
