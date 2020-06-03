@@ -130,7 +130,7 @@ def daily_growth_all(df):
     a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date']).agg({'Confirmed_Growth':'sum'}).reset_index(),
     x='Date',
     y='Confirmed_Growth',
-    title='Daily Growth in COVID Cases for '+str(df.Date.dt.date.max()))
+    title='Daily Growth in COVID Cases')
     a.update_layout(showlegend=True)
     a.update_xaxes(title_text='Date')
     a.update_yaxes(title_text='# of COVID Cases')
@@ -248,14 +248,15 @@ def main():
     df_all = load_data_global()
     a=df_us['Province_State'].unique()
     a=np.insert(a,0,'')
+    report_date = df_all.Date.dt.date.max()
 
     daily_growth_all(df_all)
     bar_graph_country(df_all)
     rolling_avg(df_all)
     rolling_avg_deaths(df_all)
     mortality_rate(df_all)
-    growth_vs_death(df_all,'Country','Global COVID Case Growth vs. COVID Deaths by Country')
-    growth_vs_death(df_us,'Province_State','COVID Case Growth vs. COVID Deaths by State')
+    growth_vs_death(df_all,'Country','New COVID Cases & Deaths by Country for ' + str(report_date))
+    growth_vs_death(df_us,'Province_State','New COVID Cases & Deaths by State for ' + str(report_date))
 
 
     option=st.selectbox('Select a State to view data', a)
