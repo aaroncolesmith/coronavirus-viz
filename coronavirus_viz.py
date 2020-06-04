@@ -137,6 +137,17 @@ def daily_growth_all(df):
     st.plotly_chart(a)
 
 
+def daily_deaths_all(df):
+    a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date']).agg({'Deaths_Growth':'sum'}).reset_index(),
+    x='Date',
+    y='Deaths_Growth',
+    title='Daily COVID Deaths')
+    a.update_layout(showlegend=True)
+    a.update_xaxes(title_text='Date')
+    a.update_yaxes(title_text='# of COVID Deaths')
+    st.plotly_chart(a)
+
+
 def bar_graph_country(df):
     #df['Country_Region'] = df.Country_Region.str[:15]
     df['Country'] = df.Country_Region.str[:15]
@@ -144,6 +155,19 @@ def bar_graph_country(df):
     a.update_layout(showlegend=True)
     a.update_xaxes(title_text='Date')
     a.update_yaxes(title_text='# of COVID Cases')
+    st.plotly_chart(a)
+
+
+def bar_graph_country_deaths(df):
+    df['Country'] = df.Country_Region.str[:15]
+    a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date','Country']).agg({'Deaths_Growth':'sum'}).reset_index().sort_values('Deaths_Growth',ascending=False),
+    x='Date',
+    y='Deaths_Growth',
+    color='Country',
+    title = 'Daily Growth in COVID Deaths by Country')
+    a.update_layout(showlegend=True)
+    a.update_xaxes(title_text='Date')
+    a.update_yaxes(title_text='# of COVID Deaths')
     st.plotly_chart(a)
 
 
@@ -253,6 +277,8 @@ def main():
     daily_growth_all(df_all)
     bar_graph_country(df_all)
     rolling_avg(df_all)
+    daily_deaths_all(df_all)
+    bar_graph_country_deaths(df_all)
     rolling_avg_deaths(df_all)
     mortality_rate(df_all)
     growth_vs_death(df_all,'Country','New COVID Cases & Deaths by Country for ' + str(report_date))
