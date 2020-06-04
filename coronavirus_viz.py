@@ -279,9 +279,9 @@ def main():
     rolling_avg(df_all)
     daily_deaths_all(df_all)
     bar_graph_country_deaths(df_all)
-    mortality_rate(df_all)
     rolling_avg_deaths(df_all)
     growth_vs_death(df_all,'Country','New COVID Cases & Deaths by Country for ' + str(report_date))
+    mortality_rate(df_all)
     growth_vs_death(df_us,'Province_State','New COVID Cases & Deaths by State for ' + str(report_date))
 
 
