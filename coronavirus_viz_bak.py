@@ -65,11 +65,9 @@ def load_data_us():
     deaths_us.loc[deaths_us.Combined_Key != deaths_us.Combined_Key.shift(1),'Deaths_Growth_Pct'] = 0
     deaths_us['Deaths_Growth_Pct'] = deaths_us.Deaths_Growth_Pct.fillna(0)
 
-
     df_us = pd.merge(df, deaths_us, left_on=['Combined_Key','Date'],right_on=['Combined_Key','Date'])
     df_us = df_us[['Admin2_x','Province_State_x','Country_Region_x','Combined_Key','top_city_x','Lat_x','Long__x','Date','Confirmed','Confirmed_Growth','Confirmed_Growth_Pct','Deaths','Deaths_Growth','Deaths_Growth_Pct']]
     df_us.columns = ['Admin','Province_State','Country_Region','Combined_Key','Top_City','Lat','Long','Date','Confirmed','Confirmed_Growth','Confirmed_Growth_Pct','Deaths','Deaths_Growth','Deaths_Growth_Pct']
-    df_us['State'] = df.Province_State.str[:15]
 
     return df_us
 
@@ -125,7 +123,6 @@ def load_data_global():
     df_all = pd.merge(confirmed_all, deaths_all, left_on=['Combined_Key','Date'],right_on=['Combined_Key','Date'])
     df_all = df_all[['Province/State_x','Country/Region_x','Combined_Key','top_city_x','Lat_x','Long_x','Date','Confirmed','Confirmed_Growth','Confirmed_Growth_Pct','Deaths','Deaths_Growth','Deaths_Growth_Pct']]
     df_all.columns = ['Province_State','Country_Region','Combined_Key','Top_City','Lat','Long','Date','Confirmed','Confirmed_Growth','Confirmed_Growth_Pct','Deaths','Deaths_Growth','Deaths_Growth_Pct']
-    df_all['Country'] = df_all.Country_Region.str[:15]
 
     return df_all
 
@@ -153,7 +150,7 @@ def daily_deaths_all(df):
 
 def bar_graph_country(df):
     #df['Country_Region'] = df.Country_Region.str[:15]
-
+    df['Country'] = df.Country_Region.str[:15]
     a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date','Country']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),x='Date',y='Confirmed_Growth',color='Country', title = 'Daily Growth in COVID Cases by Country')
     a.update_layout(showlegend=True)
     a.update_xaxes(title_text='Date')
@@ -162,7 +159,7 @@ def bar_graph_country(df):
 
 
 def bar_graph_country_deaths(df):
-    # df['Country'] = df.Country_Region.str[:15]
+    df['Country'] = df.Country_Region.str[:15]
     a=px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(90, unit='d')].groupby(['Date','Country']).agg({'Deaths_Growth':'sum'}).reset_index().sort_values('Deaths_Growth',ascending=False),
     x='Date',
     y='Deaths_Growth',
@@ -260,13 +257,22 @@ def growth_vs_death(df, dimension,title):
     #fig.show()
     st.plotly_chart(fig)
 
+def coronavirus_viz():
+    main()
 
-def dashboard(df_all, report_date):
+def main():
     st.title("Coronavirus-Viz")
     st.markdown("Feel free to explore the data. Click on an item in the legend to filter it out -- double-click an item to filter down to just that item. Or click and drag to filter the view so that you only see the range you are looking for.")
     st.write("If you have any feedback or questions, feel free to get at me on the [Twitter] (https://www.twitter.com/aaroncolesmith) machine")
 
     st.write('<img src="https://www.google-analytics.com/collect?v=1&tid=UA-18433914-1&cid=555&aip=1&t=event&ec=coronavirus_viz&ea=coronavirus_viz">',unsafe_allow_html=True)
+
+
+    df_us = load_data_us()
+    df_all = load_data_global()
+    a=df_us['Province_State'].unique()
+    a=np.insert(a,0,'')
+    report_date = df_all.Date.dt.date.max()
 
     daily_growth_all(df_all)
     bar_graph_country(df_all)
@@ -276,57 +282,15 @@ def dashboard(df_all, report_date):
     rolling_avg_deaths(df_all)
     growth_vs_death(df_all,'Country','New COVID Cases & Deaths by Country for ' + str(report_date))
     mortality_rate(df_all)
+    growth_vs_death(df_us,'Province_State','New COVID Cases & Deaths by State for ' + str(report_date))
 
-
-
-def daily_cases_by_state(df):
-    st.title("Coronavirus-Viz")
-    st.markdown("Feel free to explore the data. Click on an item in the legend to filter it out -- double-click an item to filter down to just that item. Or click and drag to filter the view so that you only see the range you are looking for.")
-    st.write("If you have any feedback or questions, feel free to get at me on the [Twitter] (https://www.twitter.com/aaroncolesmith) machine")
-
-    st.write('<img src="https://www.google-analytics.com/collect?v=1&tid=UA-18433914-1&cid=555&aip=1&t=event&ec=coronavirus_viz&ea=coronavirus_viz">',unsafe_allow_html=True)
-
-    fig = px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(30, unit='d')].groupby(['Date','State']).agg({'Confirmed_Growth':'sum'}).reset_index().sort_values('Confirmed_Growth',ascending=False),
-                x='Date',
-                y='Confirmed_Growth',
-                color='State',
-                title = 'New COVID Cases (Day over Day) by State')
-    fig.update_xaxes(title_text='Date')
-    fig.update_yaxes(title_text='# of COVID Cases')
-    st.plotly_chart(fig)
-
-
-def state_dashboard(df_us, report_date):
-
-    daily_cases_by_state(df_us)
-
-    growth_vs_death(df_us,'State','New COVID Cases & Deaths by State for ' + str(report_date))
-
-    a=df_us['Province_State'].unique()
-    a=np.insert(a,0,'')
 
     option=st.selectbox('Select a State to view data', a)
-
     if len(option) > 0:
         st.write('<img src="https://www.google-analytics.com/collect?v=1&tid=UA-18433914-1&cid=555&aip=1&t=event&ec=coronavirus_viz&ea='+option+'">',unsafe_allow_html=True)
         state=option
         state_rolling_avg(df_us, state)
         state_deaths_rolling_avg(df_us, state)
-
-
-def main():
-    df_us = load_data_us()
-    df_all = load_data_global()
-    report_date = df_all.Date.dt.date.max()
-
-
-    radio_selection = st.sidebar.radio('Select a page:',['Main Dashboard','Breakdown by US State','Breakdown by US County'])
-
-    if radio_selection == 'Main Dashboard':
-        dashboard(df_all, report_date)
-    if radio_selection == 'Breakdown by US State':
-        state_dashboard(df_us, report_date)
-
 
 if __name__ == "__main__":
     #execute
