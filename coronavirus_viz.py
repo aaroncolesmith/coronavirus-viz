@@ -16,7 +16,7 @@ def _max_width_():
         unsafe_allow_html=True,
     )
 
-@st.cache
+@st.cache(suppress_st_warning=True)
 def load_data_us():
     try:
         df = pd.read_csv('./data/time_series_covid19_confirmed_US.csv')
@@ -73,6 +73,7 @@ def load_data_us():
 
     return df_us
 
+@st.cache(suppress_st_warning=True)
 def load_data_global():
     try:
         confirmed_all = pd.read_csv('./data/time_series_covid19_confirmed_global.csv')
@@ -313,6 +314,9 @@ def state_dashboard(df_us, report_date):
         state_rolling_avg(df_us, state)
         state_deaths_rolling_avg(df_us, state)
 
+def county_dashboard(df_us, report_date):
+    growth_vs_death(df_us,'Top_City','New COVID Cases & Deaths by County for ' + str(report_date))
+
 
 def main():
     df_us = load_data_us()
@@ -326,6 +330,8 @@ def main():
         dashboard(df_all, report_date)
     if radio_selection == 'Breakdown by US State':
         state_dashboard(df_us, report_date)
+    if radio_selection == 'Breakdown by US County':
+        county_dashboard(df_us, report_date)
 
 
 if __name__ == "__main__":
