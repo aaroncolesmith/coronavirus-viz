@@ -315,7 +315,7 @@ def state_dashboard(df_us, report_date):
         state_deaths_rolling_avg(df_us, state)
 
 def county_dashboard(df_us, report_date):
-    growth_vs_death(df_us,'Top_City','New COVID Cases & Deaths by County for ' + str(report_date))
+    growth_vs_death(df_us.loc[df_us.Top_City != 'Other'],'Top_City','New COVID Cases & Deaths by County (Top 50) for ' + str(report_date))
 
 
 def main():
