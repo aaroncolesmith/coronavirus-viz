@@ -133,6 +133,7 @@ def bar_graph(df, days_back, metric ,width=800, title=''):
     st.plotly_chart(fig)
 
 def bar_graph_dimension(df, days_back, metric, dimension, width=800, title=''):
+    df = df.sort_values(metric,ascending=False)
     fig = px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(days_back, unit='d')].groupby(['Date',dimension]).agg({metric:'sum'}).reset_index().sort_values(dimension,ascending=False),
     x='Date',
     y=metric,
@@ -153,3 +154,28 @@ def rolling_avg(df, days_back, metric, width=800, title=''):
                                             color='DarkSlateGrey')))
     # fig.show()
     st.plotly_chart(fig)
+
+def rolling_avg_pct_change(df, metric, dimension, days_back=90, width=800,title='Rolling Avg. vs. Week over Week % Change'):
+
+    d=df.loc[df.Date > df.Date.max() - pd.to_timedelta(days_back, unit='d')].groupby(['Date',dimension]).agg({metric:'sum'}).reset_index().sort_values([dimension,'Date'],ascending=True)
+
+    for x in d[dimension].unique():
+        d.loc[d[dimension] == x, 'Rolling_Avg'] = d.loc[d[dimension] == x][metric].rolling(window=7).mean()
+        d.loc[d[dimension] == x, 'Pct_Change'] = d.loc[d[dimension] == x]['Rolling_Avg'].pct_change(periods=7)
+
+    fig = px.scatter(d.loc[(d.Rolling_Avg > d[metric].mean()) & (d.Date == d.Date.max())].groupby(dimension).agg({'Rolling_Avg':'last','Pct_Change':'last'}).reset_index(),
+                     x='Rolling_Avg',
+                     y='Pct_Change',
+                     color=dimension,
+                     width=width,
+                    title=title)
+    fig.update_traces(mode='markers',
+                      marker=dict(size=10,
+                                  line=dict(width=1,
+                                            color='DarkSlateGrey')))
+    # fig.show()
+    st.plotly_chart(fig)
+
+
+def ga(event_category, event_action, event_label):
+    st.write('<img src="https://www.google-analytics.com/collect?v=1&tid=UA-18433914-1&cid=555&aip=1&t=event&ec='+event_category+'&ea='+event_action+'&el='+event_label+'">',unsafe_allow_html=True)
