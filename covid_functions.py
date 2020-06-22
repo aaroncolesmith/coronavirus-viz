@@ -134,7 +134,7 @@ def bar_graph(df, days_back, metric ,width=800, title=''):
 
 def bar_graph_dimension(df, days_back, metric, dimension, width=800, title=''):
     df = df.sort_values(metric,ascending=False)
-    fig = px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(days_back, unit='d')].groupby(['Date',dimension]).agg({metric:'sum'}).reset_index().sort_values(dimension,ascending=False),
+    fig = px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(days_back, unit='d')].groupby(['Date',dimension]).agg({metric:'sum'}).reset_index().sort_values(metric,ascending=False),
     x='Date',
     y=metric,
     color=dimension,
