@@ -117,6 +117,11 @@ def load_data_global():
 
     return df_all
 
+def header():
+    st.title("Coronavirus-Viz")
+    st.markdown("Feel free to explore the data. Click on an item in the legend to filter it out -- double-click an item to filter down to just that item. Or click and drag to filter the view so that you only see the range you are looking for.")
+    st.write("If you have any feedback or questions, feel free to get at me on the [Twitter] (https://www.twitter.com/aaroncolesmith) machine")
+
 
 def bar_graph(df, days_back, metric ,width=800, title=''):
     fig = px.bar(df.loc[df.Date > df.Date.max() - pd.to_timedelta(days_back, unit='d')].groupby(['Date']).agg({metric:'sum'}).reset_index(),
