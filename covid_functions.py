@@ -129,6 +129,7 @@ def bar_graph(df, days_back, metric ,width=800, title=''):
     y=metric,
     title=title,
     width=width)
+
     # fig.show()
     st.plotly_chart(fig)
 
@@ -140,6 +141,7 @@ def bar_graph_dimension(df, days_back, metric, dimension, width=800, title=''):
     color=dimension,
     title=title,
     width=width)
+
     # fig.show()
     st.plotly_chart(fig)
 
@@ -152,6 +154,7 @@ def rolling_avg(df, days_back, metric, width=800, title=''):
                       marker=dict(size=6,
                                   line=dict(width=1,
                                             color='DarkSlateGrey')))
+
     # fig.show()
     st.plotly_chart(fig)
 
@@ -173,6 +176,7 @@ def rolling_avg_pct_change(df, metric, dimension, days_back=90, width=800,title=
                       marker=dict(size=10,
                                   line=dict(width=1,
                                             color='DarkSlateGrey')))
+
     # fig.show()
     st.plotly_chart(fig)
 
