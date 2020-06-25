@@ -16,7 +16,7 @@ def load_data_us():
     df=df.set_index(['Admin2','Province_State','Country_Region','Combined_Key','Lat','Long_']).stack().reset_index()
     df.columns=['Admin2','Province_State','Country_Region','Combined_Key','Lat','Long_','Date','Confirmed']
 
-    df['Date']=pd.to_datetime(df.Date)
+    df['Date']=pd.to_datetime(df.Date, errors='coerce')
     tmp = df.groupby(['Combined_Key']).agg({'Confirmed':'sum'}).reset_index().sort_values('Confirmed',ascending=False).head(30)
     l = tmp.Combined_Key.unique()
     df.loc[df.Combined_Key.isin(l),'top_city'] = df.Combined_Key
@@ -41,7 +41,7 @@ def load_data_us():
     us_population = deaths_us.loc[deaths_us.Date == 'Population']
     deaths_us = deaths_us.loc[deaths_us.Date != 'Population']
 
-    deaths_us['Date']=pd.to_datetime(deaths_us.Date)
+    deaths_us['Date']=pd.to_datetime(deaths_us.Date, errors='coerce')
     tmp = deaths_us.groupby(['Combined_Key']).agg({'Deaths':'sum'}).reset_index().sort_values('Deaths',ascending=False).head(30)
     l = tmp.Combined_Key.unique()
     deaths_us.loc[deaths_us.Combined_Key.isin(l),'top_city'] = deaths_us.Combined_Key
