@@ -4,9 +4,9 @@ import plotly_express as px
 import streamlit as st
 from covid_functions import load_data_us, load_data_global, bar_graph, bar_graph_dimension, rolling_avg, header, rolling_avg_pct_change, ga
 
-def main_dash(df):
+def main_dash(df, report_date):
 
-    header()
+    header(report_date)
 
     metric = 'Confirmed_Growth'
     dimension='Country'
@@ -23,9 +23,9 @@ def main_dash(df):
     rolling_avg(df,days_back,metric,800,'7 Day Rolling Avg of COVID Deaths')
     rolling_avg_pct_change(df, metric, dimension, days_back,800,'Rolling Avg. vs. % Change in COVID Deaths')
 
-def country(df):
+def country(df, report_date):
 
-    header()
+    header(report_date)
 
     days_back=90
     dimension='Country'
@@ -38,9 +38,9 @@ def country(df):
         st.write('# '+selection)
         filter_view(df, dimension, selection, days_back)
 
-def state(df):
+def state(df, report_date):
 
-    header()
+    header(report_date)
 
     metric = 'Confirmed_Growth'
     dimension='State'
@@ -65,9 +65,9 @@ def state(df):
         st.write('# '+selection)
         filter_view(df, dimension, selection, days_back)
 
-def county(df):
+def county(df, report_date):
 
-    header()
+    header(report_date)
     width=800
     days_back=90
 
@@ -122,16 +122,16 @@ def main():
     radio_selection = st.sidebar.radio('Select a page:',['Main Dashboard','Breakdown by Country','Breakdown by US State','Breakdown by US County'])
 
     if radio_selection == 'Main Dashboard':
-        main_dash(df_all)
+        main_dash(df_all, report_date)
     if radio_selection == 'Breakdown by Country':
         ga('Coronavirus-Viz','Page Load', radio_selection)
-        country(df_all)
+        country(df_all, report_date)
     if radio_selection == 'Breakdown by US State':
         ga('Coronavirus-Viz','Page Load', radio_selection)
-        state(df_us)
+        state(df_us, report_date)
     if radio_selection == 'Breakdown by US County':
         ga('Coronavirus-Viz','Page Load', radio_selection)
-        county(df_us)
+        county(df_us, report_date)
 
 if __name__ == "__main__":
     #execute
