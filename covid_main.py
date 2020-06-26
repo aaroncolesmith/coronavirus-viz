@@ -71,6 +71,10 @@ def county(df, report_date):
     width=800
     days_back=90
 
+    metric = 'Confirmed_Growth'
+    dimension = 'Combined_Key'
+    rolling_avg_pct_change(df.loc[df[metric] > 100], metric, dimension, days_back,800,'Rolling Avg. vs. % Change in COVID Cases')
+
     dimension='State'
     a=df[dimension].unique()
     a=np.insert(a,0,'')
