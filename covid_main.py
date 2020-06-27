@@ -27,7 +27,7 @@ def country(df, report_date):
 
     header(report_date)
 
-    days_back=90
+    days_back=120
     dimension='Country'
     a=df[dimension].unique()
     a=np.insert(a,0,'')
