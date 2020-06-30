@@ -148,14 +148,37 @@ def bar_graph_dimension(df, days_back, metric, dimension, width=800, title=''):
 def rolling_avg(df, days_back, metric, width=800, title=''):
     d=df.loc[(df.Date > df.Date.max() - pd.to_timedelta(days_back, unit='d'))].groupby(['Date']).agg({metric:'sum'}).reset_index()
     d['Rolling_Avg'] = d[metric].rolling(window=7).mean()
-    d1 = d.melt(id_vars=['Date']+list(d.keys()[5:]), var_name='val')
-    fig=px.line(d1, x='Date', y='value', color='val',width=width,title=title)
-    fig.update_traces(mode='lines+markers',
-                      marker=dict(size=6,
-                                  line=dict(width=1,
-                                            color='DarkSlateGrey')))
 
-    # fig.show()
+    fig = go.Figure(
+        [go.Scatter(
+            x=d.Date,
+            y=d.Rolling_Avg,
+            name='Rolling Avg',
+            mode='lines+markers',
+            marker_color='#626EF6',
+            marker=dict(
+                size=4,
+                line=dict(
+                    width=1,
+                    color='#1320B2'
+                )
+            )
+        )
+        ]
+    )
+    fig.add_trace(
+        go.Bar(
+            x=d.Date,
+            y=d.Confirmed_Growth,
+            name=metric,
+            marker_color='#626EF6',
+            marker_line_color='#1320B2',
+            marker_line_width=1.5,
+            opacity=0.25
+        )
+    )
+
+    fig.show()
     st.plotly_chart(fig)
 
 def rolling_avg_pct_change(df, metric, dimension, days_back=90, width=800,title='Rolling Avg. vs. Week over Week % Change'):
