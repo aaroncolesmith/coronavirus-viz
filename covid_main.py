@@ -4,14 +4,13 @@ import plotly_express as px
 import streamlit as st
 from covid_functions import load_data_us, load_data_global, bar_graph, bar_graph_dimension, rolling_avg, header, rolling_avg_pct_change, ga
 
-def main_dash(df, report_date):
+def main_dash(df, report_date, days_back):
 
     header(report_date)
 
     metric = 'Confirmed_Growth'
     dimension='Country'
     width=800
-    days_back=90
     bar_graph(df,days_back,metric,800,'Daily Growth in COVID Cases')
     bar_graph_dimension(df,days_back,metric,'Country',800,'Daily Growth in COVID Cases by Country')
     rolling_avg(df,days_back,metric,800,'7 Day Rolling Avg of COVID Cases')
@@ -23,11 +22,10 @@ def main_dash(df, report_date):
     rolling_avg(df,days_back,metric,800,'7 Day Rolling Avg of COVID Deaths')
     rolling_avg_pct_change(df, metric, dimension, days_back,800,'Rolling Avg. vs. % Change in COVID Deaths')
 
-def country(df, report_date):
+def country(df, report_date, days_back):
 
     header(report_date)
 
-    days_back=120
     dimension='Country'
     a=df[dimension].unique()
     a=np.insert(a,0,'')
@@ -38,14 +36,13 @@ def country(df, report_date):
         st.write('# '+selection)
         filter_view(df, dimension, selection, days_back)
 
-def state(df, report_date):
+def state(df, report_date, days_back):
 
     header(report_date)
 
     metric = 'Confirmed_Growth'
     dimension='State'
     width=800
-    days_back=90
 
     bar_graph_dimension(df,days_back,metric,dimension,800,'Daily Growth in COVID Cases by US State')
     rolling_avg_pct_change(df, metric, dimension, days_back,800,'Rolling Avg. vs. % Change in COVID Cases')
@@ -65,11 +62,10 @@ def state(df, report_date):
         st.write('# '+selection)
         filter_view(df, dimension, selection, days_back)
 
-def county(df, report_date):
+def county(df, report_date, days_back):
 
     header(report_date)
     width=800
-    days_back=90
 
     metric = 'Confirmed_Growth'
     dimension = 'Combined_Key'
@@ -122,18 +118,19 @@ def main():
     ga('Coronavirus-Viz','Page Load', 'Page Load')
 
     radio_selection = st.sidebar.radio('Select a page:',['Main Dashboard','Breakdown by Country','Breakdown by US State','Breakdown by US County'])
+    days_back = st.sidebar.slider('How many days back',30,180,90)
 
     if radio_selection == 'Main Dashboard':
-        main_dash(df_all, report_date)
+        main_dash(df_all, report_date, days_back)
     if radio_selection == 'Breakdown by Country':
         ga('Coronavirus-Viz','Page Load', radio_selection)
-        country(df_all, report_date)
+        country(df_all, report_date, days_back)
     if radio_selection == 'Breakdown by US State':
         ga('Coronavirus-Viz','Page Load', radio_selection)
-        state(df_us, report_date)
+        state(df_us, report_date, days_back)
     if radio_selection == 'Breakdown by US County':
         ga('Coronavirus-Viz','Page Load', radio_selection)
-        county(df_us, report_date)
+        county(df_us, report_date, days_back)
 
 if __name__ == "__main__":
     #execute
