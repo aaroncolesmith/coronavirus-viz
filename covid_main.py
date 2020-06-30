@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import plotly_express as px
+import plotly.graph_objects as go
 import streamlit as st
 from covid_functions import load_data_us, load_data_global, bar_graph, bar_graph_dimension, rolling_avg, header, rolling_avg_pct_change, ga
 

@@ -170,7 +170,7 @@ def rolling_avg(df, days_back, metric, width=800, title=''):
     fig.add_trace(
         go.Bar(
             x=d.Date,
-            y=d.Confirmed_Growth,
+            y=d[metric],
             name=metric,
             marker_color='#626EF6',
             marker_line_color='#1320B2',
