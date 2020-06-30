@@ -114,8 +114,6 @@ def filter_view(df, dimension, selection, days_back):
 
     ga('Coronavirus-Viz',dimension, selection)
 
-
-
 def main():
 
     df_us = load_data_us()
