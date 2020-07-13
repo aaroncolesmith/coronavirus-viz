@@ -179,7 +179,7 @@ def rolling_avg(df, days_back, metric, width=800, title=''):
         )
     )
 
-    fig.show()
+    # fig.show()
     st.plotly_chart(fig)
 
 def rolling_avg_pct_change(df, metric, dimension, days_back=90, width=800,title='Rolling Avg. vs. Week over Week % Change'):
