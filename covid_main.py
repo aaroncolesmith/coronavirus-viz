@@ -3,6 +3,7 @@ import numpy as np
 import plotly_express as px
 import plotly.graph_objects as go
 import streamlit as st
+import datetime
 from covid_functions import load_data_us, load_data_global, bar_graph, bar_graph_dimension, rolling_avg, header, rolling_avg_pct_change, ga
 
 def main_dash(df, report_date, days_back):
@@ -118,8 +119,10 @@ def main():
     report_date = df_all.Date.dt.date.max()
     ga('Coronavirus-Viz','Page Load', 'Page Load')
 
+    days_back = (datetime.datetime.now() - df_all.Date.min()).days
+
     radio_selection = st.sidebar.radio('Select a page:',['Main Dashboard','Breakdown by Country','Breakdown by US State','Breakdown by US County'])
-    days_back = st.sidebar.slider('How many days back',30,180,90)
+    days_back = st.sidebar.slider('How many days back',30,days_back,90)
 
     if radio_selection == 'Main Dashboard':
         main_dash(df_all, report_date, days_back)
